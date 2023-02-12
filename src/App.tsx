@@ -117,8 +117,9 @@ function App() {
 
   const stillPlaying  = count < MAX_COUNT;
   const handleReveal = useCallback(() => {
+    if (!configHidden) { return; }
     setRevealed(true);
-  }, [setRevealed]);
+  }, [setRevealed, configHidden]);
   const handleYes = useCallback(() => {
     if (!stillPlaying) { return; }
     if (!revealed) { return; }
@@ -167,9 +168,10 @@ function App() {
     main ='Loading...';
   } else if (imagePagesFlat.length == 0) {
     main = 'No images found that match your rules (collection type, year, etc). Reload and try with new rules.'
-  } else {
-
+  } else if (stillPlaying) {
     main = <iframe ref={ref} height="100%" width="100%" src={`https://firstview.com/collection_image_closeup.php?${imagePagesFlat[index]}`} frameBorder="0"></iframe>;
+  } else {
+    main = <div className="game-over"><h2>Game Over</h2></div>
   }
 
 

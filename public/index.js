@@ -23891,8 +23891,11 @@
     const [count, setCount] = (0, import_react.useState)(0);
     const stillPlaying = count < MAX_COUNT;
     const handleReveal = (0, import_react.useCallback)(() => {
+      if (!configHidden) {
+        return;
+      }
       setRevealed(true);
-    }, [setRevealed]);
+    }, [setRevealed, configHidden]);
     const handleYes = (0, import_react.useCallback)(() => {
       if (!stillPlaying) {
         return;
@@ -23958,8 +23961,10 @@
       main = "Loading...";
     } else if (imagePagesFlat.length == 0) {
       main = "No images found that match your rules (collection type, year, etc). Reload and try with new rules.";
-    } else {
+    } else if (stillPlaying) {
       main = /* @__PURE__ */ import_react.default.createElement("iframe", { ref, height: "100%", width: "100%", src: `https://firstview.com/collection_image_closeup.php?${imagePagesFlat[index]}`, frameBorder: "0" });
+    } else {
+      main = /* @__PURE__ */ import_react.default.createElement("div", { className: "game-over" }, /* @__PURE__ */ import_react.default.createElement("h2", null, "Game Over"));
     }
     return /* @__PURE__ */ import_react.default.createElement("div", { className: "reference-frame" }, /* @__PURE__ */ import_react.default.createElement("div", { className: `top-cover ${revealed ? "top-cover--revealed" : ""}` }, /* @__PURE__ */ import_react.default.createElement("div", { className: "top-content" }, /* @__PURE__ */ import_react.default.createElement("h1", { className: "logo" }, "RunwayGuessr"), /* @__PURE__ */ import_react.default.createElement("div", { className: "score-area" }, stillPlaying ? /* @__PURE__ */ import_react.default.createElement("h2", null, "Round ", count + 1, "/", MAX_COUNT) : /* @__PURE__ */ import_react.default.createElement("h2", null, "Game Over"), /* @__PURE__ */ import_react.default.createElement("h2", { className: `score ${score > count * 2 / 3 ? "score--good" : ""} ${score < count / 3 ? "score--bad" : ""}` }, "Score: ", score)))), main, index == 0 && !configHidden ? /* @__PURE__ */ import_react.default.createElement(Config, { setConfig, config, minPossibleYear: MIN_YEAR, maxPossibleYear: MAX_YEAR, onSave: handleSave }) : null, /* @__PURE__ */ import_react.default.createElement("div", { className: "bottom-cover" }, count < MAX_COUNT ? /* @__PURE__ */ import_react.default.createElement("div", { className: "controls" }, revealed ? /* @__PURE__ */ import_react.default.createElement("button", { onClick: handleYes, disabled: !revealed, className: "yes" }, "Yes", /* @__PURE__ */ import_react.default.createElement("div", { className: "hint" }, "(y)")) : null, configHidden ? /* @__PURE__ */ import_react.default.createElement("button", { onClick: handleReveal, disabled: revealed, className: "reveal" }, "Reveal", /* @__PURE__ */ import_react.default.createElement("div", { className: "hint" }, "(space)")) : null, revealed ? /* @__PURE__ */ import_react.default.createElement("button", { onClick: handleNo, disabled: !revealed, className: "no" }, "No", /* @__PURE__ */ import_react.default.createElement("div", { className: "hint" }, "(n)")) : null) : /* @__PURE__ */ import_react.default.createElement("div", { className: "controls" }, /* @__PURE__ */ import_react.default.createElement("button", { onClick: handleAgain, className: "play-again" }, "Play Again", /* @__PURE__ */ import_react.default.createElement("div", { className: "hint" }, "(enter)")))));
   }

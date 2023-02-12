@@ -14,7 +14,7 @@ html, body {
   bottom: 0;
 }
 
-.config {
+.config, .game-over {
   position: absolute;
   left: 0;
   right: 0;
@@ -22,6 +22,14 @@ html, body {
   bottom: 100px;
   background: #fff;
   display: flex;
+}
+
+.game-over {
+  align-items: center;
+  justify-content: space-around;
+}
+
+.config {
   flex-direction: column;
   padding: 20px;
 }

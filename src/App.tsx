@@ -3,10 +3,77 @@ import "./App.css";
 import imagePagesLocal from './image_links.json'
 
 const IGNORE_REGEX = /(Runway Details)|(Backstage)/
+const CAPSULE_REGEX = /(Bridal)|(Resort)|(Cruise)/
 const MAX_COUNT = 10;
+
+type Config = {
+  minYear: number,
+  maxYear: number,
+  includeMen: boolean,
+  includeWomen: boolean,
+  includeCapsule: boolean
+}
+
+const Config = (props: { setConfig: (c: Config) => void, config: Config, minPossibleYear: number, maxPossibleYear: number, onSave: () => void }) => {
+  const { config, setConfig, minPossibleYear, maxPossibleYear } = props;
+
+  const yearList = useMemo(() => {
+    if (minPossibleYear > maxPossibleYear) { console.error('invalid years'); return [minPossibleYear]; }
+    const list = [];
+    for (let i = minPossibleYear; i <= maxPossibleYear; i++) {
+      list.push(i)
+    }
+    return list;
+  }, [minPossibleYear, maxPossibleYear]);
+
+  const handleChangeMen = useCallback((e) => setConfig({ ...config, includeMen: e.target.checked }));
+  const handleChangeWomen = useCallback((e) => setConfig({ ...config, includeWomen: e.target.checked }));
+  const handleChangeCapsule = useCallback((e) => setConfig({ ...config, includeCapsule: e.target.checked }));
+  const handleChangeMinYear = useCallback((e) => setConfig({ ...config, minYear: parseInt(e.target.value, 10) }));
+  const handleChangeMaxYear = useCallback((e) => setConfig({ ...config, maxYear: parseInt(e.target.value, 10) }));
+
+  return (
+    <div className="config">
+      <h3>Rules</h3>
+      <label>
+        <input type="checkbox" checked={config.includeMen} onChange={handleChangeMen} />
+        Include Menswear?
+      </label>
+      <label>
+        <input type="checkbox" checked={config.includeWomen} onChange={handleChangeWomen} />
+        Include Womenswear?
+      </label>
+      <label>
+        <input type="checkbox" checked={config.includeCapsule} onChange={handleChangeCapsule} />
+        Include Resort/Cruise/Capsule Collections?
+      </label>
+      <div className="years">
+        <div className="year">
+          <label htmlFor="minYear">Min Year:</label>
+          <select id="minYear" value={`${config.minYear}`} onChange={handleChangeMinYear}>
+           {yearList.map(year => <option key={year} value={`${year}`}>{year}</option>)}
+          </select>
+        </div>
+        <div className="year">
+          <label htmlFor="maxYear">Max Year:</label>
+          <select id="maxYear" value={`${config.maxYear}`} onChange={handleChangeMaxYear}>
+           {yearList.map(year => <option key={year} value={`${year}`}>{year}</option>)}
+          </select>
+        </div>
+      </div>
+      <button onClick={props.onSave} disabled={!(config.includeMen || config.includeWomen)} className="save-config">Play</button>
+    </div>
+  );
+}
+
+const MIN_YEAR = 2000
+const MAX_YEAR = (new Date()).getFullYear()
+
 
 function App() {
   const [imagePages, setImagePages] = useState(imagePagesLocal);
+  const [config, setConfig] = useState({ minYear: MIN_YEAR, maxYear: MAX_YEAR, includeMen: true, includeWomen: true, includeCapsule: false });
+  const [configHidden, setConfigHidden] = useState(false);
   /*
   useEffect(() => {
     fetch('https://d2r56ry5w7mshh.cloudfront.net/image_links.json').then(response => {
@@ -19,15 +86,27 @@ function App() {
 
   const imagePagesFlat = useMemo(() => {
     if(!imagePages) { return null; }
-    const flat = Object.values(imagePages).flatMap(f => Object.values(f).flatMap(x => x.collection.match(IGNORE_REGEX) ? [] : x.images))
-
+    if (!configHidden)  { return null; }
+    const flat = [];
+    for (const designer of Object.values(imagePages)) {
+      for (const collection of Object.values(designer)) {
+        if (collection.ignoredCollection) { continue; }
+        if (!config.includeMen && collection.gender == 'Men') { continue; }
+        if (!config.includeWomen && collection.gender == 'Women') { continue; }
+        if (!config.includeCapsule && collection.collectionType.match(CAPSULE_REGEX)) { continue; }
+        for (const image of collection.images) {
+          flat.push(image);
+        }
+      }
+    }
+       
     for (let i = flat.length -1; i > 0; i--) {
       let j = Math.floor(Math.random() * (i + 1));
       [flat[i], flat[j]] = [flat[j], flat[i]];
     }
     return flat;
 
-  }, [imagePages]);
+  }, [imagePages, configHidden, config]);
 
   const [revealed, setRevealed] = useState(false);
   const [score, setScore] = useState(0);
@@ -79,9 +158,8 @@ function App() {
     return () => { if(handler.current) { window.removeEventListener('keydown', handler.current) } };
   }, [handleKey]);
 
-  if (!imagePagesFlat) { 
-    return <div>Loading...</div>
-  }
+  const handleSave = useCallback(() => setConfigHidden(true), [setConfigHidden]);
+
 
   return (
     <div className="reference-frame">
@@ -100,12 +178,13 @@ function App() {
     </div>
     </div>
     </div>
-      <iframe ref={ref} height="100%" width="100%" src={`https://firstview.com/collection_image_closeup.php?${imagePagesFlat[index]}`} frameBorder="0"></iframe>
+    {imagePagesFlat ? <iframe ref={ref} height="100%" width="100%" src={`https://firstview.com/collection_image_closeup.php?${imagePagesFlat[index]}`} frameBorder="0"></iframe> : 'Loading...'}
+    {index == 0 && !configHidden ? <Config setConfig={setConfig} config={config} minPossibleYear={MIN_YEAR} maxPossibleYear={MAX_YEAR} onSave={handleSave} /> : null}
       <div className="bottom-cover">
     {count < MAX_COUNT ? (
       <div className="controls">
         { revealed ? <button onClick={handleYes} disabled={!revealed}  className="yes">Yes<div className='hint'>(y)</div></button> : null }
-            <button onClick={handleReveal} disabled={revealed} className="reveal">Reveal<div className='hint'>(space)</div></button>
+      { configHidden ? <button onClick={handleReveal} disabled={revealed} className="reveal">Reveal<div className='hint'>(space)</div></button> : null }
     { revealed ? <button onClick={handleNo} disabled={!revealed} className="no">No<div className='hint'>(n)</div></button> : null}
       </div>)
       : (<div className='controls'><button onClick={handleAgain} className="play-again">Play Again<div className='hint'>(enter)</div></button></div>)}

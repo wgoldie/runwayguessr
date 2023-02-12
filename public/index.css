@@ -1,11 +1,39 @@
-html, body {
+/* src/index.css */
+body {
+  margin: 0;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+code {
+  font-family:
+    source-code-pro,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Courier New",
+    monospace;
+}
+
+/* src/App.css */
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
   overflow: hidden;
 }
-
-
 .reference-frame {
   position: absolute;
   left: 0;
@@ -13,7 +41,6 @@ html, body {
   top: 0;
   bottom: 0;
 }
-
 .top-cover {
   position: absolute;
   left: 0;
@@ -23,19 +50,15 @@ html, body {
   background: #fff;
   border-bottom: 1px solid #555;
 }
-
 .score--good {
-
   color: #0f0;
 }
-
 .score--bad {
   color: #f00;
 }
 .top-cover--revealed {
   background-color: rgba(255, 255, 255, 0.3);
 }
-
 .bottom-cover {
   position: absolute;
   left: 0;
@@ -49,13 +72,10 @@ html, body {
   justify-content: space-around;
   flex-direction: column;
 }
-
 .controls {
   display: flex;
   justify-content: space-between;
-
 }
-
 button {
   margin: 30px;
   padding: 30px;
@@ -63,20 +83,15 @@ button {
   border-radius: 7px;
   cursor: pointer;
 }
-
 .reveal {
   background-color: #fff;
 }
-
 .reveal:hover {
   background: #ddd;
-
 }
-
 .yes {
   background-color: #cfc;
 }
-
 .no {
   background-color: #fdd;
 }

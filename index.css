@@ -42,6 +42,7 @@ body {
   bottom: 0;
 }
 .top-cover {
+  padding: 0 20px;
   position: absolute;
   left: 0;
   right: 0;
@@ -49,6 +50,15 @@ body {
   height: 200px;
   background: #fff;
   border-bottom: 1px solid #555;
+}
+.top-content {
+  width: 20%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+h2 {
+  margin: 0;
 }
 .score--good {
   color: #0f0;
@@ -78,10 +88,14 @@ body {
 }
 button {
   margin: 30px;
-  padding: 30px;
+  padding: 20px;
   border: 1px solid #555;
   border-radius: 7px;
+  font-size: 200%;
   cursor: pointer;
+}
+.hint {
+  font-size: 50%;
 }
 .reveal {
   background-color: #fff;

@@ -23868,17 +23868,13 @@
       if (stillPlaying) {
         return;
       }
-      if (!revealed) {
-        return;
-      }
       setRevealed(false);
       setIndex(index + 1);
       setCount(0);
       setScore(0);
-    }, [score, setScore, index, setIndex, stillPlaying, revealed]);
+    }, [score, setScore, index, setIndex, setRevealed, stillPlaying, revealed]);
     const handler = (0, import_react.useRef)();
     const handleKey = (0, import_react.useCallback)((e3) => {
-      console.log(e3.code);
       if (e3.code == "Space") {
         handleReveal();
       }

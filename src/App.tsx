@@ -55,17 +55,15 @@ function App() {
   }, [score, setScore, index, setIndex, stillPlaying, revealed]);
   const handleAgain = useCallback(() => {
     if (stillPlaying) { return; }
-    if (!revealed) { return; }
     setRevealed(false);
     setIndex(index+1);
     setCount(0);
     setScore(0);
-  }, [score, setScore, index, setIndex, stillPlaying, revealed]);
+  }, [score, setScore, index, setIndex, setRevealed, stillPlaying, revealed]);
 
   const handler = useRef();
 
   const handleKey = useCallback((e) => {
-    console.log(e.code)
     if (e.code == 'Space') { handleReveal(); }
     if (e.code == 'KeyY') { handleYes(); }
     if (e.code == 'KeyN') { handleNo(); }

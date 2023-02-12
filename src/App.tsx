@@ -94,6 +94,8 @@ function App() {
         if (!config.includeMen && collection.gender == 'Men') { continue; }
         if (!config.includeWomen && collection.gender == 'Women') { continue; }
         if (!config.includeCapsule && collection.collectionType.match(CAPSULE_REGEX)) { continue; }
+        if (config.minYear > collection.year) { continue; }
+        if (config.maxYear < collection.year) { continue; }
         for (const image of collection.images) {
           flat.push(image);
         }
@@ -160,6 +162,16 @@ function App() {
 
   const handleSave = useCallback(() => setConfigHidden(true), [setConfigHidden]);
 
+  let main;
+  if (!imagePagesFlat) {
+    main ='Loading...';
+  } else if (imagePagesFlat.length == 0) {
+    main = 'No images found that match your rules (collection type, year, etc). Reload and try with new rules.'
+  } else {
+
+    main = <iframe ref={ref} height="100%" width="100%" src={`https://firstview.com/collection_image_closeup.php?${imagePagesFlat[index]}`} frameBorder="0"></iframe>;
+  }
+
 
   return (
     <div className="reference-frame">
@@ -178,8 +190,8 @@ function App() {
     </div>
     </div>
     </div>
-    {imagePagesFlat ? <iframe ref={ref} height="100%" width="100%" src={`https://firstview.com/collection_image_closeup.php?${imagePagesFlat[index]}`} frameBorder="0"></iframe> : 'Loading...'}
-    {index == 0 && !configHidden ? <Config setConfig={setConfig} config={config} minPossibleYear={MIN_YEAR} maxPossibleYear={MAX_YEAR} onSave={handleSave} /> : null}
+    {main}
+        {index == 0 && !configHidden ? <Config setConfig={setConfig} config={config} minPossibleYear={MIN_YEAR} maxPossibleYear={MAX_YEAR} onSave={handleSave} /> : null}
       <div className="bottom-cover">
     {count < MAX_COUNT ? (
       <div className="controls">

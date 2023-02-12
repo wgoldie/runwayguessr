@@ -7,12 +7,14 @@ const MAX_COUNT = 10;
 
 function App() {
   const [imagePages, setImagePages] = useState(imagePagesLocal);
+  /*
   useEffect(() => {
     fetch('https://d2r56ry5w7mshh.cloudfront.net/image_links.json').then(response => {
       if (!response.ok) { return; }
       return response.json();
     }).then(data => setImagePages(data))
   }, [setImagePages])
+  */
   const ref = React.useRef();
 
   const imagePagesFlat = useMemo(() => {
@@ -88,9 +90,10 @@ function App() {
     <div className={`top-cover ${revealed ? 'top-cover--revealed' : ''}`} >
     <div className="top-content">
         <h1 className="logo">RunwayGuessr</h1>
+    <div className='score-area'>
     {stillPlaying ? (
         <h2>
-          {count+1}/{MAX_COUNT}
+          Round {count+1}/{MAX_COUNT}
         </h2>
     ): <h2>Game Over</h2>}
         <h2 className={`score ${score > (count * 2 / 3) ? 'score--good' : ''} ${score < count / 3 ? 'score--bad' : ''}`}>
@@ -98,7 +101,8 @@ function App() {
         </h2>
     </div>
     </div>
-      <iframe ref={ref} height="100%" width="100%" src={imagePagesFlat[index]} frameborder="0"></iframe>
+    </div>
+      <iframe ref={ref} height="100%" width="100%" src={`https://firstview.com/collection_image_closeup.php?${imagePagesFlat[index]}`} frameBorder="0"></iframe>
       <div className="bottom-cover">
     {count < MAX_COUNT ? (
       <div className="controls">

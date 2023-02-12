@@ -62,7 +62,6 @@ html, body {
 }
 
 .top-content {
-  width: max(20%, 250px);
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -87,7 +86,7 @@ h2 {
 }
 .top-cover--revealed {
   height: 80px;
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.6);
 }
 
 .bottom-cover {
